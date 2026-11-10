@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./docker
+    image: atenasystem-backend:8.2-apache
+    container_name: atenasystem_backend
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/html
+    working_dir: /var/www/html
+    command: >
+      bash -c "
+      a2enmod rewrite && \
+      apache2-foreground"
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - internal-network
+
+  db:
+    image: mysql:8.0
+    container_name: db_atenasystem
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: atenasystem
+    restart: always
+    networks:
+      - internal-network
+
+networks:
+  internal-network:
+    driver: bridge
