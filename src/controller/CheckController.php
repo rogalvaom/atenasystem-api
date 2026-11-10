@@ -1,5 +1,5 @@
 <?php
-    class HealthController extends Controller {
+    class CheckController extends Controller {
         public function health() {
             return ["access" => true, "message" => "Api rodando!"];
         }

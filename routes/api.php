@@ -3,7 +3,7 @@
         // [METODO, ENDPOINT, CONTROLLER, FUNCTION]
         
         // Health
-        ['GET', '/health', 'HealthController', 'health'],
+        ['GET', '/', 'CheckController', 'health'],
 
         // Autenticação
         ['POST', '/login', 'LoginController', 'login'],
