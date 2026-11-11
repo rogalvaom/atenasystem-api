@@ -1,7 +1,7 @@
 <?php
     class MonitoreController{
         function getMonitores(){
-            $monitores = new Monitore();
+            $monitores = new MonitoreModel();
             return $monitores->getMonitores();
         }
 
@@ -10,7 +10,7 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $monitore = new Monitore();
+            $monitore = new MonitoreModel();
             return $monitore->getMonitore($id);
         }
 
@@ -20,7 +20,7 @@
         }
 
         function criarMonitore($post){
-            $monitore = new Monitore();
+            $monitore = new MonitoreModel();
             $monitore->nome = $post['nome'] ?? '';
             $monitore->usuario = $post['usuario'] ?? '';
             $monitore->senha = $post['senha'] ?? '';
@@ -29,7 +29,7 @@
         }
 
         function salvarMonitore($post){
-            $monitore = new Monitore();
+            $monitore = new MonitoreModel();
             $monitore->nome = $post['nome'] ?? '';
             $monitore->usuario = $post['usuario'] ?? '';
             $monitore->senha = $post['senha'] ?? '';
@@ -38,7 +38,7 @@
         }
 
         function excluirMonitore($post){
-            $monitore = new Monitore();
+            $monitore = new MonitoreModel();
             $monitore->id = $post['id'] ?? null;
             $monitore->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

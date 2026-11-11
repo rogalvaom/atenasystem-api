@@ -1,7 +1,7 @@
 <?php
     class ComissaoController{
         function getComissoes(){
-            $comissoes = new Comissao();
+            $comissoes = new ComissaoModel();
             return $comissoes->getComissoes();
         }
 
@@ -10,7 +10,7 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $comissao = new Comissao();
+            $comissao = new ComissaoModel();
             return $comissao->getComissao($id);
         }
 
@@ -20,7 +20,7 @@
         }
 
         function criarComissao($post){
-            $comissao = new Comissao();
+            $comissao = new ComissaoModel();
             $comissao->nome = $post['nome'] ?? '';
             $comissao->usuario = $post['usuario'] ?? '';
             $comissao->senha = $post['senha'] ?? '';
@@ -29,7 +29,7 @@
         }
 
         function salvarComissao($post){
-            $comissao = new Comissao();
+            $comissao = new ComissaoModel();
             $comissao->nome = $post['nome'] ?? '';
             $comissao->usuario = $post['usuario'] ?? '';
             $comissao->senha = $post['senha'] ?? '';
@@ -38,7 +38,7 @@
         }
 
         function excluirComissao($post){
-            $comissao = new Comissao();
+            $comissao = new ComissaoModel();
             $comissao->id = $post['id'] ?? null;
             $comissao->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

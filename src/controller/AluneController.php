@@ -1,7 +1,7 @@
 <?php
     class AluneController{
         function getAlunes(){
-            $alunes = new Alune();
+            $alunes = new AluneModel();
             return $alunes->getAlunes();
         }
 
@@ -10,7 +10,7 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $alune = new Alune();
+            $alune = new AluneModel();
             return $alune->getAlune($id);
         }
 
@@ -19,13 +19,13 @@
             if (!$sala && isset($_GET['sala'])) {
                 $sala = $_GET['sala'];
             }
-            $alunes = new Alune();
+            $alunes = new AluneModel();
             $alunes->sala = $sala;
             return $alunes->getAlunesSala();
         }
 
         function criarAlune($post){
-            $alune = new Alune();
+            $alune = new AluneModel();
             $alune->nome = $post['nome'] ?? '';
             $alune->sala = $post['sala'] ?? null;
             $id = $alune->criar();
@@ -38,7 +38,7 @@
         }
 
         function salvarAlune($post){
-            $alune = new Alune();
+            $alune = new AluneModel();
             $alune->nome = $post['nome'] ?? '';
             $alune->sala = $post['sala'] ?? null;
             $alune->salvar($post['id'] ?? null);
@@ -49,7 +49,7 @@
             $id = $post['id'] ?? null;
             $PresencaController = new PresencaController();
             $PresencaController->deletaPresencaAlune($id);
-            $alune = new Alune();
+            $alune = new AluneModel();
             $alune->id = $id;
             $alune->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

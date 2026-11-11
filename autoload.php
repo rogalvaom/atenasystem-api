@@ -6,6 +6,8 @@ spl_autoload_register(function ($className) {
         $projectRoot . '/core/',
         $projectRoot . '/src/controller/',  
         $projectRoot . '/src/model/',      
+        $projectRoot . '/src/middleware/',      
+        $projectRoot . '/src/request/',      
     ];
 
     foreach ($baseDirs as $baseDir) {

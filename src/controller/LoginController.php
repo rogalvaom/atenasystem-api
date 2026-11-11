@@ -1,8 +1,11 @@
 <?php
 class LoginController{
-    function login($post){
-        $usuario = $post['usuario'];
-        $senha = $post['senha'];
+    function login($data, $token){
+        $request = new LoginRequest($data, $token);
+        $request->validateLogin();
+
+        $usuario = $request->input('usuario');
+        $senha = $request->input('senha');
         $validado = false;
 
         $RepresentanteController = new RepresentanteController();
@@ -109,6 +112,7 @@ class LoginController{
             "logged" => !empty($_SESSION['usuario']),
             "usuario" => isset($_SESSION['usuario']) ? $_SESSION['usuario'] : null,
             "modo" => $modo,
+            "token" => isset($_SESSION['usuario']) ? md5(session_id()) : null,
             "modulos" => $modulos
         ];
     }

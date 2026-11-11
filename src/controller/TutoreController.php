@@ -1,7 +1,7 @@
 <?php
     class TutoreController{
         function getTutores(){
-            $tutores = new Tutore();
+            $tutores = new TutoreModel();
             return $tutores->getTutores();
         }
 
@@ -10,12 +10,12 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $tutore = new Tutore();
+            $tutore = new TutoreModel();
             return $tutore->getTutore($id);
         }
 
         function criarTutore($post){
-            $tutore = new Tutore();
+            $tutore = new TutoreModel();
             $tutore->nome = $post['nome'] ?? '';
             $tutore->disciplina = $post['disciplina'] ?? null;
             $id = $tutore->criarTutore();
@@ -28,7 +28,7 @@
         }
 
         function salvarTutore($post){
-            $tutore = new Tutore();
+            $tutore = new TutoreModel();
             $tutore->nome = $post['nome'] ?? '';
             $tutore->disciplina = $post['disciplina'] ?? null;
             $tutore->salvar($post['id'] ?? null);
@@ -36,7 +36,7 @@
         }
 
         function excluirTutore($post){
-            $tutore = new Tutore();
+            $tutore = new TutoreModel();
             $tutore->id = $post['id'] ?? null;
             $tutore->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

@@ -1,18 +1,18 @@
 <?php
     class SalaController{
         function getSalas(){
-            $salas = new Sala();
+            $salas = new SalaModel();
             return $salas->getSalas();
         }
 
         function getSala($data){
             $id = is_array($data) ? (isset($data['id']) ? $data['id'] : (isset($data['sala']) ? $data['sala'] : null)) : $data;
-            $sala = new Sala();
+            $sala = new SalaModel();
             return $sala->getSala($id);
         }
 
         function criarSala($post){
-            $sala = new Sala();
+            $sala = new SalaModel();
             $sala->nome = $post['nome'];
             $id = $sala->criar();
             return ["access" => true, "message" => "Salvo com sucesso!", "id" => $id];
@@ -24,14 +24,14 @@
         }
 
         function salvarSala($post){
-            $sala = new Sala();
+            $sala = new SalaModel();
             $sala->nome = $post['nome'];
             $sala->salvar($post['id']);
             return ["access" => true, "message" => "Atualizado com sucesso!"];
         }
 
         function excluirSala($post){
-            $sala = new Sala();
+            $sala = new SalaModel();
             $sala->id = $post['id'];
             $sala->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

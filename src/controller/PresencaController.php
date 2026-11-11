@@ -6,7 +6,7 @@
         }
 
         function buscarPresencaAlune($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_alune = $post['alune'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->aula = $post['aula'] ?? 0;
@@ -17,7 +17,7 @@
         }
 
         function justificarPresencaAlune($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_alune = $post['alune'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->aula = $post['aula'] ?? 0;
@@ -28,7 +28,7 @@
         }
 
         function buscarPresencaReuniao($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_tutore = $post['tutore'] ?? 0;
             $presenca->data = $post['data'] ?? '';
             $presente = $presenca->verificarPresenca();
@@ -37,7 +37,7 @@
         }
 
         function justificarPresencaReuniao($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_tutore = $post['tutore'] ?? 0;
             $presenca->data =  $post['data'] ?? '';
             $presenca->presente =  $post['presente'] ?? '';
@@ -46,7 +46,7 @@
         }
 
         function buscarPresencaMonitore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_monitore = $post['monitore'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->data = $post['data'] ?? '';
@@ -56,7 +56,7 @@
         }
 
         function editarPresencaMonitore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_monitore = $post['monitore'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->data =  $post['data'] ?? '';
@@ -66,7 +66,7 @@
         }
 
         function buscarPresencaTutore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_tutore = $post['tutore'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->aula = $post['aula'] ?? 0;
@@ -77,7 +77,7 @@
         }
 
         function editarPresencaTutore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_tutore = $post['tutore'] ?? 0;
             $presenca->cod_sala = $post['sala'] ?? 0;
             $presenca->data =  $post['data'] ?? '';
@@ -99,7 +99,7 @@
             $erroAlune = 0;
             foreach($alunes as $alune){
                 if(in_array($alune['id'], $presente)){
-                    $presenca = new Presenca();
+                    $presenca = new PresencaModel();
                     $presenca->cod_alune = $alune['id'];
                     $presenca->cod_sala = $post['sala'];
                     $presenca->aula = $post['aula'];
@@ -112,7 +112,7 @@
                         $presenca->criarPresenca(); 
                     }
                 }else{
-                    $presenca = new Presenca();
+                    $presenca = new PresencaModel();
                     $presenca->cod_alune = $alune['id'];
                     $presenca->cod_sala = $post['sala'];
                     $presenca->aula = $post['aula'];
@@ -134,7 +134,7 @@
         }
 
         function criarPresencaTutore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_tutore = $post['tutore'];
             $presenca->cod_sala = $post['sala'];
             $presenca->aula = $post['aula'];
@@ -150,7 +150,7 @@
         }
 
         function criarPresencaMonitore($post){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_monitore = $post['monitore'];
             $presenca->cod_sala = $post['sala'];
             $presenca->presente = 'S';
@@ -171,7 +171,7 @@
             $erroTutore = 0;
             foreach($tutores as $tutore){
                 if(in_array($tutore['id'], $presente)){
-                    $presenca = new Presenca();
+                    $presenca = new PresencaModel();
                     $presenca->cod_tutore = $tutore['id'];
                     $presenca->presente = 'S';
                     $presenca->data = $post['data'];
@@ -182,7 +182,7 @@
                         $presenca->criarPresenca(); 
                     }
                 }else{
-                    $presenca = new Presenca();
+                    $presenca = new PresencaModel();
                     $presenca->cod_tutore = $tutore['id'];
                     $presenca->presente = 'N';
                     $presenca->data = $post['data'];
@@ -287,12 +287,12 @@
         }
         
         function getPresenca(){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             return $presenca->getPresenca();
         }
 
         function getPresencaMonitore($cod_monitore, $data_inicial, $data_final){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_monitore = $cod_monitore;
             $presenca->data = $data_inicial;
             $presenca->data_final = $data_final;
@@ -300,7 +300,7 @@
         }
 
         function getPresencaPeriodo($cod_sala, $cod_alune, $cod_monitore, $cod_tutore, $data_inicial, $data_final){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_sala = $cod_sala ;
             $presenca->cod_monitore = $cod_monitore ;
             $presenca->cod_tutore = $cod_tutore ;
@@ -311,7 +311,7 @@
         }
 
         function getAusenciaPeriodo($cod_sala, $cod_alune, $cod_monitore, $cod_tutore, $data_inicial, $data_final){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_sala = $cod_sala ;
             $presenca->cod_monitore = $cod_monitore ;
             $presenca->cod_tutore = $cod_tutore ;
@@ -322,7 +322,7 @@
         }
 
         function getJustificadoPeriodo($cod_sala, $cod_alune, $cod_monitore, $cod_tutore, $data_inicial, $data_final){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_sala = $cod_sala ;
             $presenca->cod_monitore = $cod_monitore ;
             $presenca->cod_tutore = $cod_tutore ;
@@ -333,7 +333,7 @@
         }
 
         function deletaPresencaAlune($cod_alune){
-            $presenca = new Presenca();
+            $presenca = new PresencaModel();
             $presenca->cod_alune = $cod_alune;
             return $presenca->deletaPresencaAlune();
         }

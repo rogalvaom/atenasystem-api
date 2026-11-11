@@ -1,7 +1,7 @@
 <?php
     class DisciplinaController{
         function getDisciplinas(){
-            $disciplinas = new Disciplina();
+            $disciplinas = new DisciplinaModel();
             return $disciplinas->getDisciplinas();
         }
 
@@ -10,7 +10,7 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $disciplina = new Disciplina();
+            $disciplina = new DisciplinaModel();
             return $disciplina->getDisciplina($id);
         }
 
@@ -20,21 +20,21 @@
         }
 
         function criarDisciplina($post){
-            $disciplina = new Disciplina();
+            $disciplina = new DisciplinaModel();
             $disciplina->nome = $post['nome'] ?? '';
             $id = $disciplina->criar();
             return ["access" => true, "message" => "Salvo com sucesso!", "id" => $id];
         }
 
         function salvarDisciplina($post){
-            $disciplina = new Disciplina();
+            $disciplina = new DisciplinaModel();
             $disciplina->nome = $post['nome'] ?? '';
             $disciplina->salvar($post['id'] ?? null);
             return ["access" => true, "message" => "Atualizado com sucesso!"];
         }
 
         function excluirDisciplina($post){
-            $disciplina = new Disciplina();
+            $disciplina = new DisciplinaModel();
             $disciplina->id = $post['id'] ?? null;
             $disciplina->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

@@ -102,13 +102,13 @@ class CertificadoController{
 
     ////////////////////////////////////////////////////
     function certificadoGetTutores(){
-        $tutores = new Tutore();
+        $tutores = new TutoreModel();
         return json_encode($tutores->getTutores());
     }
 
     function certificadoGetTutore($post){
         $id = $post['id'];
-        $tutore = (new Tutore())->getTutore($id);
+        $tutore = (new TutoreModel())->getTutore($id);
         if($tutore["nome"] != ''){
             return json_encode([
                 "access" => true,
@@ -123,13 +123,13 @@ class CertificadoController{
     }
 
     function certificadoGetMonitores(){
-        $monitores = new Monitore();
+        $monitores = new MonitoreModel();
         return json_encode($monitores->getMonitores());
     }
 
     function certificadoGetMonitore($post){
         $id = $post['id'];
-        $monitore = (new Monitore())->getMonitore($id);
+        $monitore = (new MonitoreModel())->getMonitore($id);
         if($monitore["nome"] != ''){
             return json_encode([
                 "access" => true,
@@ -144,13 +144,13 @@ class CertificadoController{
     }
 
     function certificadoGetRepresentantes(){
-        $representantes = new Representante(); 
+        $representantes = new RepresentanteModel(); 
         return json_encode($representantes->getRepresentantes());
     }
 
     function certificadoGetRepresentante($post){
         $id = $post['id'];
-        $representante = (new Representante())->getRepresentante($id);
+        $representante = (new RepresentanteModel())->getRepresentante($id);
         if($representante["nome"] != ''){
             return json_encode([
                 "access" => true,

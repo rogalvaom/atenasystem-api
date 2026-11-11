@@ -1,5 +1,5 @@
 <?php
-    class Monitore extends Model{
+    class MonitoreModel extends Model{
         protected $table = 'monitore';
         public $id;
         public $nome;

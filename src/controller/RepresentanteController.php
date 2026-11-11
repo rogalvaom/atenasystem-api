@@ -1,7 +1,7 @@
 <?php
     class RepresentanteController{
         function getRepresentantes(){
-            $representantes = new Representante();
+            $representantes = new RepresentanteModel();
             return $representantes->getRepresentantes();
         }
 
@@ -10,7 +10,7 @@
             if (!$id && isset($_GET['id'])) {
                 $id = $_GET['id'];
             }
-            $representante = new Representante();
+            $representante = new RepresentanteModel();
             return $representante->getRepresentante($id);
         }
 
@@ -20,7 +20,7 @@
         }
 
         function criarRepresentante($post){
-            $representante = new Representante();
+            $representante = new RepresentanteModel();
             $representante->nome = $post['nome'] ?? '';
             $representante->usuario = $post['usuario'] ?? '';
             $representante->senha = $post['senha'] ?? '';
@@ -33,7 +33,7 @@
         }
 
         function salvarRepresentante($post){
-            $representante = new Representante();
+            $representante = new RepresentanteModel();
             $representante->nome = $post['nome'] ?? '';
             $representante->usuario = $post['usuario'] ?? '';
             $representante->senha = $post['senha'] ?? '';
@@ -47,7 +47,7 @@
         }
 
         function excluirRepresentante($post){
-            $representante = new Representante();
+            $representante = new RepresentanteModel();
             $representante->id = $post['id'] ?? null;
             $representante->excluir();
             return ["access" => true, "message" => "Excluído com sucesso!"];

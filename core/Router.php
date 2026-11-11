@@ -23,9 +23,26 @@ class Router {
         return true;
     }
 
+
+    function getHeaders(){
+        $headers = [];
+
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } else if (apache_request_headers()) {
+            $headers = apache_request_headers();
+        } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['HTTP_AUTHORIZATION'];
+        }
+
+        return $headers;
+    }
     function getToken(){
-        $header = getallheaders();
-        return isset($header['token']) ? $header['token'] : null;
+        $headers = $this->getHeaders();
+        $autorization = $headers['Authorization'] ?? '';
+        $token = str_replace('Bearer ', '', $autorization);
+
+        return $token;
     }
 
     function getData(){
@@ -47,7 +64,12 @@ class Router {
 
     function pathApi(){
         $url = $this->url;
-        $apiPart = substr($url, strpos($url, '/api/') + 5);
+        $pos = strpos($url, '/api');
+        if ($pos !== false) {
+            $apiPart = substr($url, $pos + 4);
+        } else {
+            $apiPart = $url;
+        }
         $apiPart = explode('?', $apiPart);
         $endpoint = $apiPart[0];
         $queryString = isset($apiPart[1]) ? $apiPart[1] : "";
@@ -57,12 +79,15 @@ class Router {
             $params = [];
             foreach ($paramsArray as $param) {
                 $param = explode('=', $param);
-                $params[$param[0]] = $param[1];
+                if (isset($param[0]) && isset($param[1])) {
+                    $params[$param[0]] = $param[1];
+                }
             }
             $this->data = array_merge($this->data, $params);
         }
 
-        return '/'.$endpoint;
+        $endpoint = rtrim($endpoint, '/');
+        return $endpoint === '' ? '/' : $endpoint;
     }
 
     function runApi($routes){
@@ -77,7 +102,18 @@ class Router {
             $RoutePath = $route[1];
             $RouteClass = $route[2];
             $RouteFunction = $route[3];
+            $RouteMiddlewares = isset($route[4]) ? $route[4] : [];
+
             if ($RouteMethod == $this->method && $RoutePath == $path){
+                foreach ($RouteMiddlewares as $middlewareClass) {
+                    if (class_exists($middlewareClass)) {
+                        $middlewareInstance = new $middlewareClass();
+                        if (method_exists($middlewareInstance, 'handle')) {
+                            $middlewareInstance->handle($this->data, $this->token);
+                        }
+                    }
+                }
+
                 $Class = new $RouteClass();
                 if (method_exists($Class, $RouteFunction)){
                     http_response_code(200);

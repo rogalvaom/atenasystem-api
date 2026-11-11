@@ -1,5 +1,5 @@
 <?php
-    class Sala extends Model{
+    class SalaModel extends Model{
         protected $table = 'sala';
         public $nome;
         public $disciplina;
