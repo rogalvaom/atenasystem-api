@@ -29,7 +29,7 @@ class Router {
 
         if (function_exists('getallheaders')) {
             $headers = getallheaders();
-        } else if (apache_request_headers()) {
+        } else if (function_exists('apache_request_headers')) {
             $headers = apache_request_headers();
         } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
             $headers = $_SERVER['HTTP_AUTHORIZATION'];
