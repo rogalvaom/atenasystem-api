@@ -1,11 +1,8 @@
 <?php
 class LoginController{
     function login($data, $token){
-        $request = new LoginRequest($data, $token);
-        $request->validateLogin();
-
-        $usuario = $request->input('usuario');
-        $senha = $request->input('senha');
+        $usuario = $data['usuario'] ?? '';
+        $senha = $data['senha'] ?? '';
         $validado = false;
 
         $RepresentanteController = new RepresentanteController();
