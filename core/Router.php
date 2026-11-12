@@ -48,15 +48,21 @@ class Router {
     function getData(){
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         $input = [];
+        
         if (strpos($contentType, 'multipart/form-data') !== false) {
             $input = $_POST;
             if (!empty($_FILES)) {
                 $input['_files'] = $_FILES;
             }
+        } elseif (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
+            $input = $_POST;
         } else {
             $contents = file_get_contents('php://input');
-            if (isset($contents)){
-                $input = (array) json_decode($contents);
+            if (!empty($contents)) {
+                $decoded = json_decode($contents, true);
+                if (is_array($decoded)) {
+                    $input = $decoded;
+                }
             }
         }
         return $input;
