@@ -1,13 +1,9 @@
 <?php
 spl_autoload_register(function ($className) {
-    $projectRoot = __DIR__;
-
     $baseDirs = [
-        $projectRoot . '/core/',
-        $projectRoot . '/src/controller/',  
-        $projectRoot . '/src/model/',      
-        $projectRoot . '/src/middleware/',      
-        $projectRoot . '/src/request/',      
+        __DIR__ . '/src/base/',
+        __DIR__ . '/src/controller/',  
+        __DIR__ . '/src/model/',      
     ];
 
     foreach ($baseDirs as $baseDir) {
