@@ -3,7 +3,9 @@ spl_autoload_register(function ($className) {
     $baseDirs = [
         __DIR__ . '/src/base/',
         __DIR__ . '/src/controller/',  
-        __DIR__ . '/src/model/',      
+        __DIR__ . '/src/model/',
+        __DIR__ . '/src/middleware/',
+        __DIR__ . '/src/request/',      
     ];
 
     foreach ($baseDirs as $baseDir) {

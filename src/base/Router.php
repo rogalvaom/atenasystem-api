@@ -1,110 +1,145 @@
 <?php
-    class Router{
+class Router{
+    private $url;
+    private $method;
+    private $data;
+    private $token;
+    private $baseUrl;
 
-        private $url;
-        private $method;
-        private $data;
-        private $token;
-        private $baseUrl;
+    function __construct() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        $this->url = $_SERVER["REQUEST_URI"];
+        $this->method = $_SERVER["REQUEST_METHOD"];
+        $this->data = $this->getData();
+        $this->token = $this->getToken();
+        $this->baseUrl = $_ENV['BASE_URL'];
+    }
 
-        function __construct() {
-            $this->url = $_SERVER["REQUEST_URI"];
-            $this->method = $_SERVER["REQUEST_METHOD"];
-            $this->data = $this->getData();
-            $this->token = $this->getToken();
-            $this->baseUrl = $_ENV['BASE_URL'];
+    function checkApi(){
+        $uri = $this->url;
+        if (strpos($uri, '/api/') === false) {
+            return false;
+        }
+        return true;
+    }
+
+
+    function getHeaders(){
+        $headers = [];
+
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+        } else if (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+        } else if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['HTTP_AUTHORIZATION'];
         }
 
-        function checkApi(){
-            $uri = $this->url;
-            if (strpos($uri, '/api/') === false) {
-                return false;
+        return $headers;
+    }
+    function getToken(){
+        $headers = $this->getHeaders();
+        $autorization = $headers['Authorization'] ?? '';
+        $token = str_replace('Bearer ', '', $autorization);
+
+        return $token;
+    }
+
+    function getData(){
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $input = [];
+        
+        if (strpos($contentType, 'multipart/form-data') !== false) {
+            $input = $_POST;
+            if (!empty($_FILES)) {
+                $input['_files'] = $_FILES;
             }
-            return true;
-        }
-
-        function getToken(){
-            $header = getallheaders();
-            $token = isset($header['token']) ? $header['token'] : null;
-            return $token;
-        }
-
-        function getData(){
-            $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-            $input = [];
-            if (strpos($contentType, 'multipart/form-data') !== false) {
-                $input = $_POST;
-                if (!empty($_FILES)) {
-                    $input['_files'] = $_FILES;
-                }
-            } elseif (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
-                $contents = file_get_contents('php://input');
-                parse_str($contents, $input);
-            } else {
-                $contents = file_get_contents('php://input');
-                if (!empty($contents)) {
-                    $decoded = json_decode($contents, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        $input = $decoded;
-                    } else {
-                        parse_str($contents, $input);
-                    }
+        } elseif (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
+            $input = $_POST;
+        } else {
+            $contents = file_get_contents('php://input');
+            if (!empty($contents)) {
+                $decoded = json_decode($contents, true);
+                if (is_array($decoded)) {
+                    $input = $decoded;
                 }
             }
-            return $input;
         }
+        return $input;
+    }
 
-        function pathApi(){
-            $url = $this->url;
+    function pathApi(){
+        $url = $this->url;
+        $pos = strpos($url, '/api');
+        if ($pos !== false) {
+            $apiPart = substr($url, $pos + 4);
+        } else {
+            $apiPart = $url;
+        }
+        $apiPart = explode('?', $apiPart);
+        $endpoint = $apiPart[0];
+        $queryString = isset($apiPart[1]) ? $apiPart[1] : "";
 
-            $apiPart = substr($url, strpos($url, '/api/') + 5);
-            $apiPart = explode('?', $apiPart);
-            $endpoint = $apiPart[0];
-            $queryString = isset($apiPart[1]) ? $apiPart[1] : "";
-
-            if ($queryString != "") {
-                $paramsArray = explode('&', $queryString);
-                $params = [];
-                foreach ($paramsArray as $param) {
-                    $param = explode('=', $param);
-                    $name = $param[0];
-                    $value = $param[1];
-                    $params[$name] = $value;
+        if ($queryString != "") {
+            $paramsArray = explode('&', $queryString);
+            $params = [];
+            foreach ($paramsArray as $param) {
+                $param = explode('=', $param);
+                if (isset($param[0]) && isset($param[1])) {
+                    $params[$param[0]] = $param[1];
                 }
-                $this->data = array_merge($this->data, $params);
             }
-
-            return '/'.$endpoint;
+            $this->data = array_merge($this->data, $params);
         }
 
-        function runApi($routes){
-            $path = $this->pathApi();
+        $endpoint = rtrim($endpoint, '/');
+        return $endpoint === '' ? '/' : $endpoint;
+    }
 
-            foreach($routes as $route){
-                $RouteMethod = $route[0];
-                $RoutePath = $route[1];
-                $RouteClass = $route[2];
-                $RouteFunction = $route[3];
-                if ($RouteMethod == $this->method && $RoutePath == $path){
-                    $Class = new $RouteClass();
-                    if (method_exists($Class, $RouteFunction)){
-                        http_response_code(200);
-                        $response = $Class->$RouteFunction($this->data, $this->token);
-                        if (is_array($response) || is_object($response)) {
-                            echo json_encode($response);
-                        } else {
-                            echo $response;
+    function runApi($routes){
+        if ($this->method == 'OPTIONS') {
+            http_response_code(200);
+            return;
+        }
+        $path = $this->pathApi();
+
+        foreach($routes as $route){
+            $RouteMethod = $route[0];
+            $RoutePath = $route[1];
+            $RouteClass = $route[2];
+            $RouteFunction = $route[3];
+            $RouteMiddlewares = isset($route[4]) ? $route[4] : [];
+
+            if ($RouteMethod == $this->method && $RoutePath == $path){
+                foreach ($RouteMiddlewares as $middlewareClass) {
+                    if (class_exists($middlewareClass)) {
+                        $middlewareInstance = new $middlewareClass();
+                        if (method_exists($middlewareInstance, 'handle')) {
+                            $middlewareInstance->handle($this->data, $this->token);
                         }
-                        break;
-                    } else {
-                        http_response_code(405);
-                        break;
                     }
+                }
+
+                $Class = new $RouteClass();
+                if (method_exists($Class, $RouteFunction)){
+                    http_response_code(200);
+                    $response = $Class->$RouteFunction($this->data, $this->token);
+                    if (is_array($response) || is_object($response)) {
+                        echo json_encode($response);
+                    } else {
+                        echo $response;
+                    }
+                    return;
                 } else {
                     http_response_code(405);
+                    return;
                 }
             }
         }
+        http_response_code(405);
+    }
 
         function pathWeb($url, $routes){
             $url = explode('?',$url);
