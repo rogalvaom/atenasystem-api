@@ -134,11 +134,24 @@ class Router{
                     return;
                 } else {
                     http_response_code(405);
+                    echo json_encode([
+                        "status" => 405,
+                        "code" => "ENDPOINT_NOT_FOUND",
+                        "message" => "The requested endpoint was not found.",
+                        "details" => "No record was found for the provided identifier."
+                    ]);
                     return;
                 }
             }
         }
-        http_response_code(405);
+        http_response_code(404);
+        echo json_encode([
+            "status" => 404,
+            "code" => "RESOURCE_NOT_FOUND",
+            "message" => "The requested resource was not found.",
+            "details" => "No record was found for the provided identifier."
+        ]);
+
     }
 
         function pathWeb($url, $routes){
@@ -165,7 +178,7 @@ class Router{
                 }
             }
 
-            return $_SERVER['PROJECT_ROOT'] . '/public/view/404.html';
+            return null;
         }
 
         function runWeb($routes){
@@ -215,6 +228,8 @@ class Router{
                     }
                 }
             }
+
+            echo "<h1>Page not found</h1>";
         }
     }
 ?>
