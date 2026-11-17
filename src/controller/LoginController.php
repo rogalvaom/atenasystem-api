@@ -69,6 +69,10 @@ class LoginController{
     }
 
     function getSession(){
+        if(!isset($_SESSION)) {
+            session_start();
+        }
+
         $modo = isset($_SESSION['modo']) ? $_SESSION['modo'] : null;
         $modulos = [];
 
