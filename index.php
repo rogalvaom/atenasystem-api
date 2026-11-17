@@ -8,8 +8,17 @@
     include_once('routes/web.php');
     include_once('routes/api.php');
 
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => true,
+        'httponly' => true,
+        'samesite' => 'None',
+    ]);
+
     if (!session_start()) {
-        session_start();
+        http_response_code(500);
+        exit;
     }
 
     // SETAR HORARIO DO SERVIDOR
